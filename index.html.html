@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title> 👋 Will you be my Valentine?</title>
+	<style>
+		:root {
+			--bg1: #ffdde8;
+			--bg2: #fff6f9;
+			--accent: #ff3b6b;
+			--accent2: #ff7aa2;
+			--text: #2b1b22;
+			--card: rgba(255, 255, 255, 0.85);
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+			color: var(--text);
+			min-height: 100vh;
+			display: grid;
+			place-items: center;
+			background: radial-gradient(circle at top, var(--bg2), var(--bg1));
+			overflow-x: hidden;
+		}
+		.hearts {
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			opacity: 0.35;
+			background:
+				radial-gradient(circle at 10% 20%, rgba(255, 59, 107, 0.25) 0 8px, transparent 9px),
+				radial-gradient(circle at 70% 30%, rgba(255, 122, 162, 0.25) 0 10px, transparent 11px),
+				radial-gradient(circle at 40% 80%, rgba(255, 59, 107, 0.18) 0 12px, transparent 13px);
+			filter: blur(0.2px);
+		}
+		.card {
+			width: min(720px, 92vw);
+			background: var(--card);
+			border: 1px solid rgba(255, 59, 107, 0.18);
+			border-radius: 22px;
+			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+			padding: 28px;
+			position: relative;
+		}
+		h1 {
+			margin: 0 0 8px;
+			font-size: clamp(28px, 4vw, 42px);
+			letter-spacing: -0.02em;
+		}
+		.subtitle {
+			margin: 0 0 18px;
+			font-size: 16px;
+			line-height: 1.5;
+			opacity: 0.9;
+		}
+		.badge {
+			display: inline-flex;
+			gap: 10px;
+			align-items: center;
+			padding: 10px 12px;
+			border-radius: 14px;
+			background: rgba(255, 59, 107, 0.08);
+			border: 1px solid rgba(255, 59, 107, 0.15);
+			margin: 8px 0 18px;
+			font-size: 14px;
+		}
+		.grid {
+			display: grid;
+			grid-template-columns: 1.1fr 0.9fr;
+			gap: 18px;
+		}
+		@media (max-width: 700px) {
+			.grid { grid-template-columns: 1fr; }
+		}
+		.box {
+			border-radius: 18px;
+			padding: 18px;
+			background: rgba(255, 255, 255, 0.65);
+			border: 1px solid rgba(0, 0, 0, 0.06);
+		}
+		.label {
+			font-size: 12px;
+			text-transform: uppercase;
+			letter-spacing: 0.12em;
+			opacity: 0.65;
+			margin-bottom: 8px;
+		}
+		.details {
+			margin: 0;
+			line-height: 1.65;
+		}
+		.cta {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			margin-top: 18px;
+		}
+		button {
+			border: 0;
+			border-radius: 999px;
+			padding: 12px 18px;
+			font-weight: 700;
+			cursor: pointer;
+			transition: transform 0.06s ease, box-shadow 0.2s ease, background 0.2s ease;
+		}
+		.btn-yes {
+			background: linear-gradient(135deg, var(--accent), var(--accent2));
+			color: white;
+			box-shadow: 0 12px 24px rgba(255, 59, 107, 0.25);
+		}
+		.btn-yes:hover { transform: translateY(-1px); }
+		.btn-no {
+			background: rgba(43, 27, 34, 0.08);
+			color: var(--text);
+		}
+		.note {
+			margin-top: 14px;
+			font-size: 14px;
+			opacity: 0.85;
+		}
+		.footer {
+			margin-top: 16px;
+			font-size: 12px;
+			opacity: 0.6;
+		}
+		.pop {
+			position: fixed;
+			inset: 0;
+			display: none;
+			place-items: center;
+			background: rgba(0, 0, 0, 0.35);
+			padding: 18px;
+		}
+		.pop[open] { display: grid; }
+		.pop-card {
+			width: min(520px, 92vw);
+			background: white;
+			border-radius: 20px;
+			padding: 22px;
+			box-shadow: 0 30px 90px rgba(0, 0, 0, 0.25);
+			border: 1px solid rgba(0, 0, 0, 0.08);
+			text-align: center;
+		}
+		.big {
+			font-size: 34px;
+			margin: 6px 0 10px;
+		}
+		#confetti {
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			display: none;
+		}
+		#confetti[show] { display: block; }
+	</style>
+</head>
+<body>
+	<div class="hearts" aria-hidden="true"></div>
+	<canvas id="confetti"></canvas>
+
+	<main class="card">
+		<h1>Hey <span id="name">You</span>…</h1>
+		<p class="subtitle">I have a question for you. No pressure. Just something sweet for Valentine’s Day.</p>
+
+		<div class="badge">❤️ <strong id="from">From: Joemary</strong> • <span id="date">Feb 14</span></div>
+
+		<div class="grid">
+			<section class="box">
+				<div class="label">The plan</div>
+				<p class="details">
+					📍 <strong id="place">Your favorite spot</strong><br>
+					🕒 <strong id="time">6:00 PM</strong><br>
+					🍽️ <strong id="activity">Dinner + a little surprise</strong>
+				</p>
+				<div class="cta">
+					<button class="btn-yes" id="yesBtn">Yes, I’d love to</button>
+					<button class="btn-no" id="noBtn" title="Try to click me 😄">Not sure</button>
+				</div>
+				<p class="note" id="note">I’d love to hear your answer. <code>Love</code>.</p>
+			</section>
+
+			<section class="box">
+				<div class="label">A little message</div>
+				<p class="details" id="message">
+					I’d love to spend Valentine’s Day with you. If you’re free, will you be my Valentine?
+				</p>
+				<div class="footer">Made with extra courage and lots of kilig.</div>
+			</section>
+		</div>
+	</main>
+
+	<div class="pop" id="pop">
+		<div class="pop-card">
+			<div class="big">💖 Yay!</div>
+			<p id="popText">It’s a date. I’m excited to see you!</p>
+			<button class="btn-yes" id="closePop">Close</button>
+		</div>
+	</div>
+
+	<script>
+		const qs = new URLSearchParams(location.search);
+		const setText = (id, value) => {
+			if (!value) return;
+			const el = document.getElementById(id);
+			if (el) el.textContent = value;
+		};
+
+		setText('name', qs.get('to'));
+		setText('from', `From: ${qs.get('from')}`);
+		setText('place', qs.get('place'));
+		setText('time', qs.get('time'));
+		setText('activity', qs.get('activity'));
+		setText('date', qs.get('date'));
+		setText('message', qs.get('message'));
+
+		const pop = document.getElementById('pop');
+		const popText = document.getElementById('popText');
+		const yesBtn = document.getElementById('yesBtn');
+		const noBtn = document.getElementById('noBtn');
+		const closePop = document.getElementById('closePop');
+
+		yesBtn.addEventListener('click', () => {
+			popText.textContent = qs.get('yesText') || "It’s a date. I’m excited to see you!";
+			pop.setAttribute('open', '');
+			startConfetti();
+
+		const GOOGLE_FORM_LINK = "https://docs.google.com/forms/d/e/1FAIpQLSf6blz5Ch4DTnwiug7qXd0iKGxsw2ZlhP9kceBpsMAf3oCuvA/viewform?usp=sharing&ouid=100267297322609872320";
+
+		yesBtn.addEventListener("click", () => {
+ 		 window.open(GOOGLE_FORM_LINK, "_blank");
+  		popText.textContent = qs.get("yesText") || "It’s a date. I’m excited to see you!";
+ 		 pop.setAttribute("open", "");
+ 		 startConfetti();
+});
+		});
+
+		closePop.addEventListener('click', () => {
+			pop.removeAttribute('open');
+			document.getElementById('confetti').removeAttribute('show');
+		});
+
+		// playful "Not sure" button
+		noBtn.addEventListener('mouseenter', () => {
+			const card = document.querySelector('.card');
+			const r = card.getBoundingClientRect();
+			const x = Math.random() * (r.width - noBtn.offsetWidth);
+			const y = Math.random() * (r.height - noBtn.offsetHeight);
+			noBtn.style.position = 'absolute';
+			noBtn.style.left = `${Math.max(12, x)}px`;
+			noBtn.style.top = `${Math.max(12, y)}px`;
+		});
+
+		// simple confetti
+		function startConfetti() {
+			const canvas = document.getElementById('confetti');
+			canvas.setAttribute('show', '');
+			const ctx = canvas.getContext('2d');
+			const dpr = window.devicePixelRatio || 1;
+			canvas.width = innerWidth * dpr;
+			canvas.height = innerHeight * dpr;
+			canvas.style.width = innerWidth + 'px';
+			canvas.style.height = innerHeight + 'px';
+			ctx.scale(dpr, dpr);
+
+			const colors = ['#ff3b6b', '#ff7aa2', '#ffd1dc', '#ffffff'];
+			const pieces = Array.from({ length: 140 }, () => ({
+				x: Math.random() * innerWidth,
+				y: -20 - Math.random() * innerHeight,
+				s: 4 + Math.random() * 6,
+				v: 2 + Math.random() * 5,
+				w: (Math.random() - 0.5) * 2,
+				c: colors[(Math.random() * colors.length) | 0],
+				a: Math.random() * Math.PI,
+			}));
+
+			let t = 0;
+			function frame() {
+				t += 1;
+				ctx.clearRect(0, 0, innerWidth, innerHeight);
+				for (const p of pieces) {
+					p.y += p.v;
+					p.x += p.w;
+					p.a += 0.06;
+					ctx.save();
+					ctx.translate(p.x, p.y);
+					ctx.rotate(p.a);
+					ctx.fillStyle = p.c;
+					ctx.fillRect(-p.s / 2, -p.s / 2, p.s, p.s);
+					ctx.restore();
+				}
+				if (t < 180) requestAnimationFrame(frame);
+			}
+			requestAnimationFrame(frame);
+		}
+	</script>
+</body>
+</html>
